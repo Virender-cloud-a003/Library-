@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>View Members - Library Management</title>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', sans-serif;}
+    body { min-height:100vh; display:flex; flex-direction:column; background:url("image/62a25d95-ed51-49ad-bf62-02f44bbbd29e.jpg") no-repeat center center fixed; background-size:cover; color:#222;}
+    header { background: rgba(0,0,0,0.6); color:white; padding:20px; text-align:center; font-size:24px; font-weight:bold;}
+    nav { background: rgba(0,0,0,0.7); padding:15px; text-align:center;}
+    nav a { margin:0 15px; text-decoration:none; color:#f4f4f4; font-size:18px; font-weight:bold; padding:5px 10px; border-radius:6px; transition:0.3s;}
+    nav a:hover { background: #3498db; color:white; box-shadow:0 4px 10px rgba(0,0,0,0.4);}
+    nav a.active { background:#00c6ff; color:#111; box-shadow:0 4px 12px rgba(0,0,0,0.5);}
+    main { flex:1; display:flex; justify-content:center; align-items:flex-start; padding:40px 20px;}
+    .container { background: rgba(255,255,255,0.85); backdrop-filter: blur(12px); padding:30px; border-radius:12px; width:500px; max-width:90%; box-shadow:0 8px 20px rgba(0,0,0,0.4);}
+    h2 { text-align:center; margin-bottom:15px; font-size:26px; color:#222;}
+    .member-count { text-align:center; margin-bottom:20px; font-size:18px; color:#222;}
+    ul.member-list { list-style:none; padding:0;}
+    ul.member-list li { padding:12px 15px; margin-bottom:12px; border-radius:8px; background:rgba(255,255,255,0.7); border-left:4px solid #0072ff; transition:0.3s;}
+    ul.member-list li:hover { background:rgba(255,255,255,0.9); transform:translateX(5px);}
+    ul.member-list li strong { color:#0072ff;}
+    footer { background: rgba(0,0,0,0.7); color:white; text-align:center; padding:15px; font-size:14px;}
+  </style>
+</head>
+<body>
+  <header>📚 Library Management System</header>
+
+  <nav>
+    <a href="index.html">Dashboard</a>
+    <a href="add-book.html">Add Book</a>
+    <a href="add-member.html">Add Member</a>
+    <a href="view-books.html">View Books</a>
+    <a href="view-members.html" class="active">View Members</a>
+    <a href="member-dashboard.html">Member Dashboard</a>
+  </nav>
+
+  <main>
+    <div class="container">
+      <h2>Members List</h2>
+      <div class="member-count">Total Members: <span id="memberCount">0</span></div>
+      <ul class="member-list" id="memberList"></ul>
+    </div>
+  </main>
+
+  <footer>&copy; 2025 Library Management System | All Rights Reserved</footer>
+
+  <script>
+    const memberList = document.getElementById('memberList');
+    const memberCount = document.getElementById('memberCount');
+    const members = JSON.parse(localStorage.getItem('members')) || [
+      { name:"John Doe", email:"john@example.com", phone:"1234567890", address:"Delhi" },
+      { name:"Jane Smith", email:"jane@example.com", phone:"9876543210", address:"Mumbai" }
+    ];
+    function loadMembers(){
+      memberList.innerHTML='';
+      members.forEach(m=>{
+        const li=document.createElement('li');
+        li.innerHTML=`<strong>${m.name}</strong> - ${m.email} - ${m.phone} - ${m.address}`;
+        memberList.appendChild(li);
+      });
+      memberCount.textContent=members.length;
+    }
+    loadMembers();
+  </script>
+</body>
+</html>

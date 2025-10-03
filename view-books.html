@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>View Books - Library</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: url("image/2307.w064.n002.487B.p1.487.jpg") no-repeat center center fixed;
+      background-size: cover;
+      color: #222;
+    }
+
+    header {
+      background: rgba(0,0,0,0.6);
+      color: white;
+      padding: 20px;
+      text-align: center;
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    nav {
+      background: rgba(0,0,0,0.7);
+      padding: 15px;
+      text-align: center;
+    }
+
+    nav a {
+      margin: 0 15px;
+      text-decoration: none;
+      color: #f4f4f4;
+      font-size: 18px;
+      font-weight: bold;
+      padding: 5px 10px;
+      border-radius: 6px;
+      transition: all 0.3s;
+    }
+
+    nav a:hover {
+      background: #3498db;
+      color: white;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+    }
+
+    nav a.active {
+      background: #00c6ff;
+      color: #111;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    }
+
+    main {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+
+    .books-container {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(12px);
+      padding: 30px;
+      border-radius: 12px;
+      width: 900px;
+      max-width: 95%;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .books-container:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 28px rgba(0,0,0,0.5);
+    }
+
+    h2 {
+      text-align: center;
+      color: #222;
+      margin-bottom: 10px;
+    }
+
+    .book-count {
+      text-align: center;
+      font-size: 18px;
+      margin-bottom: 20px;
+      font-weight: bold;
+      color: #16a085;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      background: rgba(255,255,255,0.85);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    th, td {
+      padding: 12px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #2980b9;
+      color: white;
+    }
+
+    tr {
+      background: rgba(255,255,255,0.75);
+      transition: all 0.3s;
+    }
+
+    tr:hover {
+      background: rgba(255,255,255,1);
+      transform: scale(1.02);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+
+    .status-available {
+      color: green;
+      font-weight: bold;
+    }
+
+    .status-issued {
+      color: red;
+      font-weight: bold;
+    }
+
+    footer {
+      background: rgba(0,0,0,0.7);
+      color: white;
+      text-align: center;
+      padding: 15px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    📚 Library Management System
+  </header>
+
+  <nav>
+    <a href="index.html">Dashboard</a>
+    <a href="add-book.html">Add Book</a>
+    <a href="add-member.html">Add Member</a>
+    <a href="view-books.html" class="active">View Books</a>
+    <a href="view-members.html">View Members</a>
+  </nav>
+
+  <main>
+    <div class="books-container">
+      <h2>📖 All Books</h2>
+      <div class="book-count" id="bookCountDisplay">Total Books: 0</div>
+      <table>
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Genre</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="booksTableBody">
+          <!-- Books will be injected here -->
+        </tbody>
+      </table>
+    </div>
+  </main>
+
+  <footer>
+    &copy; 2025 Library Management System. All Rights Reserved
+  </footer>
+
+  <script>
+    let books = JSON.parse(localStorage.getItem("books")) || [];
+
+    // Add default books if none exist
+    if(books.length === 0) {
+      books = [
+        { title: "the great gatsby", author: "f. scott fitzgerald", genre: "classic", status: "Available" },
+        { title: "1984", author: "george orwell", genre: "dystopian", status: "Issued" },
+        { title: "the hobbit", author: "j.r.r. tolkien", genre: "fantasy", status: "Available" }
+      ];
+      localStorage.setItem("books", JSON.stringify(books));
+    }
+
+    const tableBody = document.getElementById("booksTableBody");
+    const countDisplay = document.getElementById("bookCountDisplay");
+
+    // Capitalize first letter of each word
+    function capitalizeWords(str) {
+      return str.replace(/\b\w/g, char => char.toUpperCase());
+    }
+
+    countDisplay.textContent = `Total Books: ${books.length}`;
+
+    books.forEach(book => {
+      const row = document.createElement("tr");
+      const statusClass = book.status.toLowerCase() === "available" ? "status-available" : "status-issued";
+      row.innerHTML = `
+        <td>${capitalizeWords(book.title)}</td>
+        <td>${capitalizeWords(book.author)}</td>
+        <td>${capitalizeWords(book.genre)}</td>
+        <td class="${statusClass}">${capitalizeWords(book.status)}</td>
+      `;
+      tableBody.appendChild(row);
+    });
+  </script>
+</body>
+</html>
