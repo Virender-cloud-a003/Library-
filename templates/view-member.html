@@ -48,10 +48,24 @@
   <script>
     const memberList = document.getElementById('memberList');
     const memberCount = document.getElementById('memberCount');
-    const members = JSON.parse(localStorage.getItem('members')) || [
-      { name:"John Doe", email:"john@example.com", phone:"1234567890", address:"Delhi" },
-      { name:"Jane Smith", email:"jane@example.com", phone:"9876543210", address:"Mumbai" }
-    ];
+
+    // Safely get members from localStorage
+    let members = [];
+    try {
+      members = JSON.parse(localStorage.getItem('members')) || [];
+    } catch (e) {
+      members = [];
+    }
+
+    // If no members in localStorage, load sample data
+    if(members.length === 0){
+      members = [
+        { name:"John Doe", email:"john@example.com", phone:"1234567890", address:"Delhi" },
+        { name:"Jane Smith", email:"jane@example.com", phone:"9876543210", address:"Mumbai" }
+      ];
+      localStorage.setItem('members', JSON.stringify(members));
+    }
+
     function loadMembers(){
       memberList.innerHTML='';
       members.forEach(m=>{
@@ -61,6 +75,7 @@
       });
       memberCount.textContent=members.length;
     }
+
     loadMembers();
   </script>
 </body>

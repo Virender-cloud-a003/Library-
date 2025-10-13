@@ -171,9 +171,7 @@
             <th>Status</th>
           </tr>
         </thead>
-        <tbody id="booksTableBody">
-          <!-- Books will be injected here -->
-        </tbody>
+        <tbody id="booksTableBody"></tbody>
       </table>
     </div>
   </main>
@@ -183,36 +181,47 @@
   </footer>
 
   <script>
+    // Get stored books and borrowed book data
     let books = JSON.parse(localStorage.getItem("books")) || [];
+    let borrowedBooks = JSON.parse(localStorage.getItem("borrowedBooks")) || [];
 
     // Add default books if none exist
-    if(books.length === 0) {
+    if (books.length === 0) {
       books = [
-        { title: "the great gatsby", author: "f. scott fitzgerald", genre: "classic", status: "Available" },
-        { title: "1984", author: "george orwell", genre: "dystopian", status: "Issued" },
-        { title: "the hobbit", author: "j.r.r. tolkien", genre: "fantasy", status: "Available" }
+        { title: "The Great Gatsby", author: "F. Scott Fitzgerald", genre: "Classic", status: "Available" },
+        { title: "1984", author: "George Orwell", genre: "Dystopian", status: "Available" },
+        { title: "The Hobbit", author: "J.R.R. Tolkien", genre: "Fantasy", status: "Available" }
       ];
       localStorage.setItem("books", JSON.stringify(books));
     }
 
-    const tableBody = document.getElementById("booksTableBody");
-    const countDisplay = document.getElementById("bookCountDisplay");
-
-    // Capitalize first letter of each word
+    // Capitalize function
     function capitalizeWords(str) {
       return str.replace(/\b\w/g, char => char.toUpperCase());
     }
 
+    // Update book status based on borrowed list
+    books.forEach(book => {
+      const isBorrowed = borrowedBooks.some(b => b.title.toLowerCase() === book.title.toLowerCase());
+      book.status = isBorrowed ? "Issued" : "Available";
+    });
+
+    // Update localStorage after status sync
+    localStorage.setItem("books", JSON.stringify(books));
+
+    // Display in table
+    const tableBody = document.getElementById("booksTableBody");
+    const countDisplay = document.getElementById("bookCountDisplay");
     countDisplay.textContent = `Total Books: ${books.length}`;
 
     books.forEach(book => {
       const row = document.createElement("tr");
-      const statusClass = book.status.toLowerCase() === "available" ? "status-available" : "status-issued";
+      const statusClass = book.status === "Available" ? "status-available" : "status-issued";
       row.innerHTML = `
         <td>${capitalizeWords(book.title)}</td>
         <td>${capitalizeWords(book.author)}</td>
         <td>${capitalizeWords(book.genre)}</td>
-        <td class="${statusClass}">${capitalizeWords(book.status)}</td>
+        <td class="${statusClass}">${book.status}</td>
       `;
       tableBody.appendChild(row);
     });

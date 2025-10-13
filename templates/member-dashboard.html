@@ -32,10 +32,12 @@
   <a href="index.html">Dashboard</a>
   <a href="add-book.html">Add Book</a>
   <a href="add-member.html">Add Member</a>
-  <a href="view-books.html" class="active">View Books</a>
-  <a href="view-members.html">View Members</a>
-  <a href="member-dashboard.html">Member Dashboard</a> <!-- Added link -->
+  <a href="view-books.html">View Books</a>
+  <a href="view-member.html">View Members</a>
+  <a href="borrow-book.html">Borrow Book</a>
+  <a href="member-dashboard.html" class="active">Member Dashboard</a>
 </nav>
+
 <main>
   <div class="container">
     <h2>My Borrowed Books</h2>
@@ -59,11 +61,8 @@
 <script>
   const borrowedTableBody = document.getElementById('borrowedTableBody');
 
-  // Sample borrowed books - fetch from localStorage if available
-  let borrowedBooks = JSON.parse(localStorage.getItem('borrowedBooks')) || [
-    {member:"John Doe", title:"The Great Gatsby", borrowed:"2025-09-25", due:"2025-10-05"},
-    {member:"Jane Smith", title:"1984", borrowed:"2025-09-20", due:"2025-09-30"}
-  ];
+  // Fetch borrowed books from localStorage
+  let borrowedBooks = JSON.parse(localStorage.getItem('borrowRecords')) || [];
 
   function calculateFine(dueDateStr){
     const today = new Date();
@@ -73,18 +72,22 @@
   }
 
   borrowedTableBody.innerHTML = '';
-  borrowedBooks.forEach(book=>{
-    const fine = calculateFine(book.due);
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td>${book.member}</td>
-      <td>${book.title}</td>
-      <td>${book.borrowed}</td>
-      <td>${book.due}</td>
-      <td class="${fine>0?'fine':'no-fine'}">${fine>0?'₹'+fine:'No Fine'}</td>
-    `;
-    borrowedTableBody.appendChild(tr);
-  });
+  if(borrowedBooks.length === 0){
+    borrowedTableBody.innerHTML = `<tr><td colspan="5" style="text-align:center;">No books borrowed yet.</td></tr>`;
+  } else {
+    borrowedBooks.forEach(book=>{
+      const fine = calculateFine(book.due);
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${book.member}</td>
+        <td>${book.title}</td>
+        <td>${book.borrowed}</td>
+        <td>${book.due}</td>
+        <td class="${fine>0?'fine':'no-fine'}">${fine>0?'₹'+fine:'No Fine'}</td>
+      `;
+      borrowedTableBody.appendChild(tr);
+    });
+  }
 </script>
 </body>
 </html>
